@@ -159,7 +159,7 @@ func (assert *TemplateTest) TestFieldProperties() {
 	field = findField("category", findMessage("Vehicle", vehicleFile))
 	assert.Equal("category", field.Name)
 	assert.Equal("Vehicle category.", field.Description)
-	assert.Equal("", field.Label) // proto3, neither required, nor optional are valid
+	assert.Equal("singular", field.Label) // proto3, clarified label
 	assert.Equal("Category", field.Type)
 	assert.Equal("Vehicle.Category", field.LongType)
 	assert.Equal("com.example.Vehicle.Category", field.FullType)

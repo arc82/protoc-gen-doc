@@ -219,6 +219,11 @@
       <div class="file-heading">
         <h2 id="{{.Name}}">{{.Name}}</h2><a href="#title">Top</a>
       </div>
+      {{if .IsProto3}}
+        <h4>Version: Proto3</h4>
+      {{else}}
+        <h4>Version: Proto2</h4>
+      {{end}}
       {{p .Description}}
 
       {{range .Messages}}

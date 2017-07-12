@@ -24,6 +24,7 @@ func NewTemplate(pr *parser.ParseResult) *Template {
 			HasExtensions: len(f.Extensions) > 0,
 			HasMessages:   len(f.Messages) > 0,
 			HasServices:   len(f.Services) > 0,
+			IsProto3:      f.IsProto3,
 		}
 
 		for _, e := range f.Enums {
@@ -62,6 +63,7 @@ type File struct {
 	HasExtensions bool `json:"file_has_extensions"`
 	HasMessages   bool `json:"file_has_messages"`
 	HasServices   bool `json:"file_has_services"`
+	IsProto3      bool `json:"file_is_proto3"`
 
 	Enums      orderedEnums      `json:"file_enums"`
 	Extensions orderedExtensions `json:"file_extensions"`
@@ -244,10 +246,16 @@ func parseMessageExtension(pe *parser.Extension) *MessageExtension {
 }
 
 func parseMessageField(pf *parser.Field) *MessageField {
+	clarified_label := pf.Label
+
+	if pf.IsProto3 && clarified_label == "" {
+		clarified_label = "singular"
+	}
+
 	return &MessageField{
 		Name:         pf.Name,
 		Description:  pf.Comment,
-		Label:        pf.Label,
+		Label:        clarified_label,
 		Type:         baseName(pf.Type),
 		LongType:     strings.TrimPrefix(pf.Type, pf.Package+"."),
 		FullType:     pf.Type,

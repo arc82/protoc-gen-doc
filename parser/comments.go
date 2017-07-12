@@ -50,9 +50,9 @@ func (ce *commentExtractor) commentForPath(path string) string {
 func scrubComment(s string) string {
 	lines := strings.Split(s, "\n")
 
-	for idx, line := range lines {
-		lines[idx] = strings.Trim(line, " /\n*")
-	}
-
+	for idx, line := range lines {	
+			lines[idx] = strings.Trim(line, " /\n*")
+	}		
+	
 	return strings.Trim(strings.Join(lines, "\n"), "\n")
 }
