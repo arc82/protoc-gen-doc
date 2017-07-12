@@ -2,7 +2,7 @@ package protoc_gen_doc
 
 import (
 	"fmt"
-	"github.com/pseudomuto/protoc-gen-doc/parser"
+	"github.com/arc82/protoc-gen-doc/parser"
 	"sort"
 	"strings"
 )
@@ -90,7 +90,9 @@ type Message struct {
 	LongName    string `json:"message_long_name"`
 	FullName    string `json:"message_full_name"`
 	Description string `json:"message_description"`
+	Examples    []string `json:"message_example"`
 
+	HasExamples    bool `json:"message_has_examples`
 	HasExtensions bool `json:"message_has_extensions"`
 	HasFields     bool `json:"message_has_extensions"`
 
@@ -136,6 +138,10 @@ type Service struct {
 	FullName    string           `json:"service_full_name"`
 	Description string           `json:"service_description"`
 	Methods     []*ServiceMethod `json:"service_methods"`
+	Examples    []string         `json:"service_examples"`
+
+	HasExamples  bool            `json:"service_has_examples`
+
 }
 
 type ServiceMethod struct {
@@ -159,6 +165,11 @@ type ScalarValue struct {
 	PhpType    string `json:"scalar_value_php_type"`
 	PythonType string `json:"scalar_value_python_type"`
 	RubyType   string `json:"scalar_value_ruby_type"`
+}
+
+type DescriptionData struct {
+	Description string
+	Examples    []string
 }
 
 func parseEnum(pe *parser.Enum) *Enum {
@@ -199,11 +210,15 @@ func parseFileExtension(pe *parser.Extension) *FileExtension {
 }
 
 func parseMessage(pm *parser.Message) *Message {
+	descriptionData := parseDescriptionData(pm.Comment)
+	
 	msg := &Message{
 		Name:          baseName(pm.Name),
 		LongName:      pm.Name,
 		FullName:      pm.FullName(),
-		Description:   pm.Comment,
+		Description:   descriptionData.Description,
+		Examples:      descriptionData.Examples,
+		HasExamples:   len(descriptionData.Examples) > 0,
 		HasExtensions: len(pm.Extensions) > 0,
 		HasFields:     len(pm.Fields) > 0,
 	}
@@ -241,11 +256,14 @@ func parseMessageField(pf *parser.Field) *MessageField {
 }
 
 func parseService(ps *parser.Service) *Service {
+	descriptionData := parseDescriptionData(ps.Comment)
 	service := &Service{
 		Name:        ps.Name,
 		LongName:    ps.Name,
 		FullName:    fmt.Sprintf("%s.%s", ps.Package, ps.Name),
-		Description: ps.Comment,
+		Description: descriptionData.Description,
+		Examples:    descriptionData.Examples,
+		HasExamples: len(descriptionData.Examples) > 0,
 	}
 
 	for _, sm := range ps.Methods {
@@ -271,6 +289,23 @@ func parseServiceMethod(pm *parser.ServiceMethod) *ServiceMethod {
 func baseName(name string) string {
 	parts := strings.Split(name, ".")
 	return parts[len(parts)-1]
+}
+
+func parseDescriptionData(description string) *DescriptionData {
+	splitData := strings.Split(description, "@example")
+
+	if len(splitData) == 1 {
+		return &DescriptionData{
+			Description: splitData[0],			
+		}
+	} else {
+		return &DescriptionData{
+			Description: splitData[0],
+			Examples:     splitData[1:],
+		}
+	}
+
+	
 }
 
 func makeScalars() []*ScalarValue {

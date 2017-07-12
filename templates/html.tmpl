@@ -158,6 +158,16 @@
         border: 1px solid #fbfbfb;
         border-radius: 1ex;
       }
+
+      pre code {
+        background-color: #eee;
+        display: block;
+        padding: 20px;
+        font-family: "Courier New";
+        font-size: 120%;
+        padding-top: 0;
+        padding-bottom: 0;        
+      }
     </style>
 
     <!-- User custom CSS -->
@@ -252,6 +262,22 @@
             </tbody>
           </table>
         {{end}}
+
+        {{if .HasExamples}}
+          {{ $numOfExamples := len .Examples}} {{if eq $numOfExamples 1}}
+            <h4>Example</h4>
+          {{else}}
+            <h4>Examples</h4>
+          {{end}}
+          {{range .Examples}}
+            <pre>
+              <code>                
+                {{.}}                
+              </code>
+            </pre>
+          {{end}}
+        {{end}}
+
       {{end}}
 
       {{range .Enums}}
@@ -311,6 +337,22 @@
             {{end}}
           </tbody>
         </table>
+
+        {{if .HasExamples}}
+          {{ $numOfExamples := len .Examples}} {{if eq $numOfExamples 1}}
+            <h4>Example</h4>
+          {{else}}
+            <h4>Examples</h4>
+          {{end}}
+          {{range .Examples}}
+            <pre>
+              <code>                
+                {{.}}                
+              </code>
+            </pre>
+          {{end}}
+        {{end}}
+
       {{end}}
     {{end}}
 

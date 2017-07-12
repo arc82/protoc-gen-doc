@@ -1,9 +1,9 @@
 package protoc_gen_doc_test
 
 import (
-	"github.com/pseudomuto/protoc-gen-doc"
-	"github.com/pseudomuto/protoc-gen-doc/parser"
-	"github.com/pseudomuto/protoc-gen-doc/test"
+	"github.com/arc82/protoc-gen-doc"
+	"github.com/arc82/protoc-gen-doc/parser"
+	"github.com/arc82/protoc-gen-doc/test"
 	"github.com/stretchr/testify/suite"
 	"testing"
 )
@@ -122,6 +122,17 @@ func (assert *TemplateTest) TestMessageExtensionProperties() {
 	assert.Equal("Booking", ext.ScopeType)
 	assert.Equal("Booking", ext.ScopeLongType)
 	assert.Equal("com.example.Booking", ext.ScopeFullType)
+}
+
+func (assert *TemplateTest) TestMessageExamples() {
+	msg := findMessage("Model", vehicleFile)
+	assert.True(msg.HasExamples)
+	assert.Equal(len(msg.Examples), 2)
+	assert.Equal(msg.Examples[0], "\ncom.example::Model model;\nmodel.set_id(123);\n")
+	assert.Equal(msg.Examples[1], "\nmodel.set_model_name(\"Z3\");")
+
+	msg2 := findMessage("FindVehicleById", vehicleFile)
+	assert.False(msg2.HasExamples)
 }
 
 func (assert *TemplateTest) TestFieldProperties() {

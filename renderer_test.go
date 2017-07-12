@@ -1,9 +1,9 @@
 package protoc_gen_doc_test
 
 import (
-	"github.com/pseudomuto/protoc-gen-doc"
-	"github.com/pseudomuto/protoc-gen-doc/parser"
-	"github.com/pseudomuto/protoc-gen-doc/test"
+	"github.com/arc82/protoc-gen-doc"
+	"github.com/arc82/protoc-gen-doc/parser"
+	"github.com/arc82/protoc-gen-doc/test"
 	"github.com/stretchr/testify/suite"
 	"os"
 	"testing"

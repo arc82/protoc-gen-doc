@@ -19,6 +19,10 @@ extensions and service methods can go either before or after the definition. If 
 documentation comment begins with `@exclude`, the corresponding item will be excluded
 from the generated documentation.
 
+To write examples for a message or service use the `@example` tag within the message
+or service description. Any text following this will be formatted and displayed
+alongside the message or service description.
+
 ## Invoking the Plugin
 
 The plugin is invoked by passing the `--doc_out` option to the `protoc` compiler. The

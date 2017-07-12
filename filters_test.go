@@ -1,7 +1,7 @@
 package protoc_gen_doc_test
 
 import (
-	"github.com/pseudomuto/protoc-gen-doc"
+	"github.com/arc82/protoc-gen-doc"
 	"github.com/stretchr/testify/suite"
 	html "html/template"
 	"testing"

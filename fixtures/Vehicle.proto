@@ -31,6 +31,11 @@ message FindVehicleById {
 
 /**
  * Represents a vehicle model.
+ * @example
+ * com.example::Model model;
+ * model.set_id(123);
+ * @example
+ * model.set_model_name("Z3");
  */
 message Model {
   string id         = 1; // The unique model ID.

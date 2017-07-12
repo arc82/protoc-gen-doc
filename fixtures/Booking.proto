@@ -18,6 +18,9 @@ service BookingService {
 
 /**
  * Represents the status of a vehicle booking.
+ * @example
+ * com.example::BookingStatus booking_status;
+ * booking_status.set_id(314);
  */
 message BookingStatus {
   /**
