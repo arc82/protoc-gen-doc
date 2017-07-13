@@ -227,66 +227,83 @@
       {{p .Description}}
 
       {{range .Messages}}
-        <h3 id="{{.FullName}}">{{.LongName}}</h3>
-        {{p .Description}}
-
-        {{if .HasFields}}
+        {{if .IsMap}}
+          <h3 id="{{.FullName}}">{{.LongName}}<span style="float:right">Map</span></h3>
+          {{p .Description}}
           <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              {{range .Fields}}
+              <thead>
+                <tr><td>Key</td><td>Value</td></tr>
+              </thead>
+              <tbody>
                 <tr>
-                  <td>{{.Name}}</td>
-                  <td><a href="#{{.FullType}}">{{.LongType}}</a></td>
-                  <td>{{.Label}}</td>
-                  <td><p>{{.Description}} {{if .DefaultValue}}Default: {{.DefaultValue}}{{end}}</p></td>
+                  {{range .Fields}}                    
+                    <td><a href="#{{.FullType}}">{{.LongType}}</a></td>                    
+                  {{end}}
                 </tr>
-              {{end}}
-            </tbody>
-          </table>
-        {{end}}
+              </tbody>
+            </table>
+        {{else}}   
+          <h3 id="{{.FullName}}">{{.LongName}}<span style="float:right">Message</span></h3>     
+          {{p .Description}}
 
-        {{if .HasExtensions}}
-          <br>
-          <table class="extension-table">
-            <thead>
-              <tr><td>Extension</td><td>Type</td><td>Base</td><td>Number</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              {{range .Extensions}}
-                <tr>
-                  <td>{{.Name}}</td>
-                  <td><a href="#{{.FullType}}">{{.LongType}}</a></td>
-                  <td><a href="#{{.ContainingFullType}}">{{.ContainingLongType}}</a></td>
-                  <td>{{.Number}}</td>
-                  <td><p>{{.Description}}{{if .DefaultValue}} Default: {{.DefaultValue}}{{end}}</p></td>
-                </tr>
-              {{end}}
-            </tbody>
-          </table>
-        {{end}}
-
-        {{if .HasExamples}}
-          {{ $numOfExamples := len .Examples}} {{if eq $numOfExamples 1}}
-            <h4>Example</h4>
-          {{else}}
-            <h4>Examples</h4>
+          {{if .HasFields}}
+            <table class="field-table">
+              <thead>
+                <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+              </thead>
+              <tbody>
+                {{range .Fields}}
+                  <tr>
+                    <td>{{.Name}}</td>
+                    <td><a href="#{{.FullType}}">{{.LongType}}</a></td>
+                    <td>{{.Label}}</td>
+                    <td><p>{{.Description}} {{if .DefaultValue}}Default: {{.DefaultValue}}{{end}}</p></td>
+                  </tr>
+                {{end}}
+              </tbody>
+            </table>
           {{end}}
-          {{range .Examples}}
-            <pre>
-              <code>                
-                {{.}}                
-              </code>
-            </pre>
-          {{end}}
-        {{end}}
 
+          {{if .HasExtensions}}
+            <br>
+            <table class="extension-table">
+              <thead>
+                <tr><td>Extension</td><td>Type</td><td>Base</td><td>Number</td><td>Description</td></tr>
+              </thead>
+              <tbody>
+                {{range .Extensions}}
+                  <tr>
+                    <td>{{.Name}}</td>
+                    <td><a href="#{{.FullType}}">{{.LongType}}</a></td>
+                    <td><a href="#{{.ContainingFullType}}">{{.ContainingLongType}}</a></td>
+                    <td>{{.Number}}</td>
+                    <td><p>{{.Description}}{{if .DefaultValue}} Default: {{.DefaultValue}}{{end}}</p></td>
+                  </tr>
+                {{end}}
+              </tbody>
+            </table>
+          {{end}}
+
+          {{if .HasExamples}}
+            {{ $numOfExamples := len .Examples}} {{if eq $numOfExamples 1}}
+              <h4>Example</h4>
+            {{else}}
+              <h4>Examples</h4>
+            {{end}}
+            {{range .Examples}}
+              <pre>
+                <code>                
+                  {{.}}                
+                </code>
+              </pre>
+            {{end}}
+          {{end}}
+
+        {{end}}
       {{end}}
 
       {{range .Enums}}
-        <h3 id="{{.FullName}}">{{.LongName}}</h3>
+        <h3 id="{{.FullName}}">{{.LongName}}<span style="float:right">Enum</span></h3>
         {{p .Description}}
         <table class="enum-table">
           <thead>
@@ -305,7 +322,7 @@
       {{end}}
 
       {{if .HasExtensions}}
-        <h3 id="{{$file_name}}-extensions">File-level Extensions</h3>
+        <h3 id="{{$file_name}}-extensions">File-level Extensions<span style="float:right">Extension</span></h3>
         <table class="extension-table">
           <thead>
             <tr><td>Extension</td><td>Type</td><td>Base</td><td>Number</td><td>Description</td></tr>
@@ -325,7 +342,7 @@
       {{end}}
 
       {{range .Services}}
-        <h3 id="{{.FullName}}">{{.Name}}</h3>
+        <h3 id="{{.FullName}}">{{.Name}}<span style="float:right">Service</span></h3>
         {{p .Description}}
         <table class="enum-table">
           <thead>

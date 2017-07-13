@@ -43,6 +43,10 @@ func NewTemplate(pr *parser.ParseResult) *Template {
 			file.Services = append(file.Services, parseService(s))
 		}
 
+		//Function where you give it pr and file and it will go through the messages and wherever there is a field that has not a basic data type so is 
+		// nested enum or message or something else then it will put 'Enum' or 'Message' as it's type
+		file = clarifyNestedtypes(file, pr)
+
 		sort.Sort(file.Enums)
 		sort.Sort(file.Extensions)
 		sort.Sort(file.Messages)
@@ -97,6 +101,7 @@ type Message struct {
 	HasExamples    bool `json:"message_has_examples`
 	HasExtensions bool `json:"message_has_extensions"`
 	HasFields     bool `json:"message_has_extensions"`
+	IsMap         bool `json:"message_is_map"` //Since maps are converted to messages and maps need different formatting in the documentation
 
 	Extensions []*MessageExtension `json:"message_extensions"`
 	Fields     []*MessageField     `json:"message_fields"`
@@ -233,6 +238,15 @@ func parseMessage(pm *parser.Message) *Message {
 		msg.Fields = append(msg.Fields, parseMessageField(f))
 	}
 
+	if len(msg.Fields) == 2 && msg.Fields[0].Name == "key" && msg.Fields[1].Name == "value" {
+		//Any message with two fields, the first having the name key and the second having the name value will be assumed to be a map
+		msg.IsMap = true
+		
+		msg.Name = strings.TrimSuffix(msg.Name, "Entry")//Since when maps are converted to messages the suffix 'entry' is appended
+		msg.LongName = strings.TrimSuffix(msg.LongName, "Entry") 
+		msg.FullName = strings.TrimSuffix(msg.FullName, "Entry")
+	}
+
 	return msg
 }
 
@@ -247,11 +261,13 @@ func parseMessageExtension(pe *parser.Extension) *MessageExtension {
 
 func parseMessageField(pf *parser.Field) *MessageField {
 	clarified_label := pf.Label
-
+	
 	if pf.IsProto3 && clarified_label == "" {
 		clarified_label = "singular"
 	}
 
+	fmt.Printf("Field name is %v label is %v type is %v\n", pf.Name, pf.Label, pf.Type)
+	
 	return &MessageField{
 		Name:         pf.Name,
 		Description:  pf.Comment,
@@ -260,7 +276,7 @@ func parseMessageField(pf *parser.Field) *MessageField {
 		LongType:     strings.TrimPrefix(pf.Type, pf.Package+"."),
 		FullType:     pf.Type,
 		DefaultValue: pf.DefaultValue,
-	}
+	}	
 }
 
 func parseService(ps *parser.Service) *Service {
@@ -509,3 +525,8 @@ type orderedServices []*Service
 func (os orderedServices) Len() int           { return len(os) }
 func (os orderedServices) Swap(i, j int)      { os[i], os[j] = os[j], os[i] }
 func (os orderedServices) Less(i, j int) bool { return os[i].LongName < os[j].LongName }
+
+func clarifyNestedtypes(file *File, pr *parser.ParseResult) *File {
+	//Implementation here
+	return file
+}
